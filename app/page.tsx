@@ -67,6 +67,45 @@ export default function EtecbookMobileApp() {
     bio: "Sou um estudante de Análise e Desenvolvimento de Sistemas apaixonado por tecnologia e inovação. Busco sempre aprender e aplicar novos conhecimentos em projetos desafiadores.",
   })
 
+  // Adicionar após os outros estados
+  const [studentClassification, setStudentClassification] = useState({
+    level: "Avançado", // Iniciante, Intermediário, Avançado, Expert
+    score: 8.7,
+    badge: "🥇",
+    color: "text-yellow-600",
+    bgColor: "bg-yellow-50",
+    factors: {
+      workQuality: 8.5, // Baseado nas avaliações IA dos trabalhos
+      socialEngagement: 9.2, // Baseado nas curtidas categorizadas
+      tccProgress: 8.0, // Baseado no progresso e qualidade do TCC
+      writingQuality: 8.9, // Baseado na análise IA da escrita
+      professionalSkills: 8.3, // Baseado em habilidades técnicas demonstradas
+    },
+    strengths: ["Excelente comunicação", "Código limpo", "Trabalho em equipe"],
+    improvements: ["Documentação técnica", "Testes unitários"],
+  })
+
+  const [curriculumData, setCurriculumData] = useState({
+    personalInfo: {
+      name: userProfile.name,
+      email: "joao.silva@etec.sp.gov.br",
+      phone: "(11) 99999-9999",
+      linkedin: "linkedin.com/in/joaosilva",
+      github: "github.com/joaosilva",
+    },
+    skills: ["React", "Node.js", "Python", "SQL", "Git"],
+    projects: [
+      {
+        title: "Sistema de Gestão Escolar",
+        description: "Aplicação web completa para gerenciamento de escola",
+        technologies: ["React", "Node.js", "MySQL"],
+        aiScore: 8.5,
+      },
+    ],
+    certifications: ["Curso de React - ETEC", "Fundamentos de Banco de Dados"],
+    languages: ["Português (Nativo)", "Inglês (Intermediário)"],
+  })
+
   const assignments = [
     { id: 1, title: "Projeto de Banco de Dados", dueDate: "2024-02-15", status: "pending", timeLeft: "3 dias" },
     { id: 2, title: "Algoritmos de Ordenação", dueDate: "2024-02-20", status: "submitted", timeLeft: "8 dias" },
@@ -93,7 +132,11 @@ export default function EtecbookMobileApp() {
       time: "2h atrás",
       content: "Acabei de finalizar meu projeto de e-commerce! 🛒✨",
       image: "/placeholder.svg?height=300&width=400&text=E-commerce+Project",
-      likes: 24,
+      likes: {
+        students: 15, // Bronze
+        teachers: 3, // Prata
+        partners: 2, // Ouro
+      },
       comments: 8,
       type: "photo",
     },
@@ -104,7 +147,11 @@ export default function EtecbookMobileApp() {
       time: "4h atrás",
       content: "Primeira vez programando em Python! Que linguagem incrível 🐍",
       image: "/placeholder.svg?height=300&width=400&text=Python+Code",
-      likes: 18,
+      likes: {
+        students: 12,
+        teachers: 4,
+        partners: 1,
+      },
       comments: 5,
       type: "work",
     },
@@ -115,7 +162,11 @@ export default function EtecbookMobileApp() {
       time: "6h atrás",
       content: "Dia de apresentação do TCC! Nervosa mas animada 🎓",
       image: "/placeholder.svg?height=300&width=400&text=TCC+Presentation",
-      likes: 45,
+      likes: {
+        students: 28,
+        teachers: 8,
+        partners: 5,
+      },
       comments: 12,
       type: "milestone",
     },
@@ -128,7 +179,11 @@ export default function EtecbookMobileApp() {
       title: "Sistema de Gestão Escolar",
       description: "Aplicação web completa para gerenciamento de escola",
       image: "/placeholder.svg?height=200&width=300&text=School+Management",
-      likes: 32,
+      likes: {
+        students: 18,
+        teachers: 6,
+        partners: 4,
+      },
       comments: 7,
       aiScore: 8.5,
       tags: ["React", "Node.js", "MySQL"],
@@ -139,7 +194,11 @@ export default function EtecbookMobileApp() {
       title: "App de Controle Financeiro",
       description: "Aplicativo mobile para controle de gastos pessoais",
       image: "/placeholder.svg?height=200&width=300&text=Finance+App",
-      likes: 28,
+      likes: {
+        students: 16,
+        teachers: 5,
+        partners: 3,
+      },
       comments: 5,
       aiScore: 9.1,
       tags: ["React Native", "Firebase"],
@@ -248,6 +307,51 @@ export default function EtecbookMobileApp() {
     },
   ])
 
+  // Adicionar função para calcular classificação
+  const calculateStudentClassification = () => {
+    const factors = studentClassification.factors
+    const weights = {
+      workQuality: 0.25,
+      socialEngagement: 0.15,
+      tccProgress: 0.25,
+      writingQuality: 0.2,
+      professionalSkills: 0.15,
+    }
+
+    const totalScore =
+      factors.workQuality * weights.workQuality +
+      factors.socialEngagement * weights.socialEngagement +
+      factors.tccProgress * weights.tccProgress +
+      factors.writingQuality * weights.writingQuality +
+      factors.professionalSkills * weights.professionalSkills
+
+    let level, badge, color, bgColor
+
+    if (totalScore >= 9.0) {
+      level = "Expert"
+      badge = "💎"
+      color = "text-purple-600"
+      bgColor = "bg-purple-50"
+    } else if (totalScore >= 8.0) {
+      level = "Avançado"
+      badge = "🥇"
+      color = "text-yellow-600"
+      bgColor = "bg-yellow-50"
+    } else if (totalScore >= 6.5) {
+      level = "Intermediário"
+      badge = "🥈"
+      color = "text-gray-600"
+      bgColor = "bg-gray-50"
+    } else {
+      level = "Iniciante"
+      badge = "🥉"
+      color = "text-orange-600"
+      bgColor = "bg-orange-50"
+    }
+
+    return { level, badge, color, bgColor, score: totalScore }
+  }
+
   const handleCoverImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
@@ -281,6 +385,121 @@ export default function EtecbookMobileApp() {
     { id: "videos", label: "Vídeos", icon: Video },
     { id: "perfil", label: "Perfil", icon: User },
   ]
+
+  // Modal de Envio de Currículo
+  const [showCurriculumModal, setShowCurriculumModal] = useState(false)
+
+  const CurriculumModal = () =>
+    showCurriculumModal && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Enviar Currículo</span>
+              <Button variant="ghost" size="icon" onClick={() => setShowCurriculumModal(false)}>
+                ×
+              </Button>
+            </CardTitle>
+            <CardDescription>
+              Seu currículo será enviado automaticamente com base no seu perfil e classificação IA
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Preview do Currículo */}
+            <div className="p-4 bg-gray-50 rounded-lg space-y-3">
+              <div className="flex items-center gap-3">
+                <Avatar className="w-12 h-12">
+                  <AvatarImage src={userProfile.avatar || "/placeholder.svg"} alt={userProfile.name} />
+                  <AvatarFallback>JS</AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg">{curriculumData.personalInfo.name}</h3>
+                  <p className="text-sm text-gray-600">{userProfile.course}</p>
+                  <div
+                    className={`inline-flex items-center gap-1 ${studentClassification.bgColor} px-2 py-1 rounded-full mt-1`}
+                  >
+                    <span className="text-sm">{studentClassification.badge}</span>
+                    <span className={`text-xs font-medium ${studentClassification.color}`}>
+                      {studentClassification.level}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p>
+                    <strong>Email:</strong> {curriculumData.personalInfo.email}
+                  </p>
+                  <p>
+                    <strong>Telefone:</strong> {curriculumData.personalInfo.phone}
+                  </p>
+                </div>
+                <div>
+                  <p>
+                    <strong>LinkedIn:</strong> {curriculumData.personalInfo.linkedin}
+                  </p>
+                  <p>
+                    <strong>GitHub:</strong> {curriculumData.personalInfo.github}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-medium mb-2">Principais Habilidades:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {curriculumData.skills.map((skill, index) => (
+                    <Badge key={index} variant="secondary">
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-medium mb-2">Projetos Destacados:</h4>
+                {curriculumData.projects.map((project, index) => (
+                  <div key={index} className="mb-2">
+                    <p className="font-medium">{project.title}</p>
+                    <p className="text-sm text-gray-600">{project.description}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="flex gap-1">
+                        {project.technologies.map((tech, i) => (
+                          <Badge key={i} variant="outline" className="text-xs">
+                            {tech}
+                          </Badge>
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Star className="h-3 w-3 text-yellow-500" />
+                        <span className="text-xs">{project.aiScore}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Mensagem Personalizada */}
+            <div className="space-y-2">
+              <Label htmlFor="cover-letter">Mensagem Personalizada (Opcional)</Label>
+              <Textarea id="cover-letter" placeholder="Escreva uma mensagem personalizada para a empresa..." rows={4} />
+            </div>
+
+            {/* Botões */}
+            <div className="flex gap-2">
+              <Button variant="outline" className="flex-1 bg-transparent" onClick={() => setShowCurriculumModal(false)}>
+                Cancelar
+              </Button>
+              <Button className="flex-1 bg-green-600 hover:bg-green-700">
+                <User className="h-4 w-4 mr-2" />
+                Enviar Currículo
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
 
   if (userType === null) {
     return (
@@ -378,6 +597,7 @@ export default function EtecbookMobileApp() {
       </div>
     )
   }
+  ;<CurriculumModal />
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -461,10 +681,16 @@ export default function EtecbookMobileApp() {
                 <Bell className="h-5 w-5" />
                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs"></span>
               </Button>
-              <Avatar className="w-8 h-8">
-                <AvatarImage src={userProfile.avatar || "/placeholder.svg"} alt={userProfile.name} />
-                <AvatarFallback>JS</AvatarFallback>
-              </Avatar>
+              <div className="relative">
+                <Avatar className="w-8 h-8">
+                  <AvatarImage src={userProfile.avatar || "/placeholder.svg"} alt={userProfile.name} />
+                  <AvatarFallback>JS</AvatarFallback>
+                </Avatar>
+                {/* Selo de Classificação */}
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-sm">
+                  <span className="text-xs">{studentClassification.badge}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -586,15 +812,62 @@ export default function EtecbookMobileApp() {
                   {/* Ações do Post */}
                   <div className="p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-6">
-                        <button className="flex items-center gap-2 text-red-600 hover:text-red-700 active:scale-95 transition-transform">
-                          <ThumbsUp className="h-6 w-6" />
-                          <span className="font-medium text-base">{post.likes}</span>
-                        </button>
+                      <div className="flex items-center gap-4">
+                        {/* Curtidas Categorizadas */}
+                        <div className="flex items-center gap-3">
+                          {/* Curtidas Ouro - Parceiros */}
+                          {post.likes.partners > 0 && (
+                            <button className="flex items-center gap-1 text-yellow-600 hover:text-yellow-700 active:scale-95 transition-transform">
+                              <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
+                                <ThumbsUp className="h-4 w-4" />
+                                <span className="text-sm font-medium">{post.likes.partners}</span>
+                                <span className="text-xs">🥇</span>
+                              </div>
+                            </button>
+                          )}
+
+                          {/* Curtidas Prata - Professores */}
+                          {post.likes.teachers > 0 && (
+                            <button className="flex items-center gap-1 text-gray-600 hover:text-gray-700 active:scale-95 transition-transform">
+                              <div className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-full">
+                                <ThumbsUp className="h-4 w-4" />
+                                <span className="text-sm font-medium">{post.likes.teachers}</span>
+                                <span className="text-xs">🥈</span>
+                              </div>
+                            </button>
+                          )}
+
+                          {/* Curtidas Bronze - Alunos */}
+                          {post.likes.students > 0 && (
+                            <button className="flex items-center gap-1 text-orange-600 hover:text-orange-700 active:scale-95 transition-transform">
+                              <div className="flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-full">
+                                <ThumbsUp className="h-4 w-4" />
+                                <span className="text-sm font-medium">{post.likes.students}</span>
+                                <span className="text-xs">🥉</span>
+                              </div>
+                            </button>
+                          )}
+                        </div>
+
                         <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 active:scale-95 transition-transform">
                           <MessageSquare className="h-6 w-6" />
                           <span className="text-base">{post.comments}</span>
                         </button>
+                      </div>
+                    </div>
+
+                    {/* Resumo de Curtidas */}
+                    <div className="mb-3 p-2 bg-gray-50 rounded-lg">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600">Total de curtidas:</span>
+                        <span className="font-medium">
+                          {post.likes.students + post.likes.teachers + post.likes.partners}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
+                        <span>🥇 Parceiros: {post.likes.partners}</span>
+                        <span>🥈 Professores: {post.likes.teachers}</span>
+                        <span>🥉 Alunos: {post.likes.students}</span>
                       </div>
                     </div>
 
@@ -640,10 +913,30 @@ export default function EtecbookMobileApp() {
                       <p className="font-medium text-base">{work.title}</p>
                       <p className="text-sm text-gray-600">por {work.author}</p>
                       <div className="flex items-center justify-between mt-2">
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-1">
-                            <ThumbsUp className="h-4 w-4 text-red-500" />
-                            <span className="text-sm">{work.likes}</span>
+                        <div className="flex items-center gap-3">
+                          {/* Curtidas Categorizadas para Trabalhos */}
+                          <div className="flex items-center gap-2">
+                            {work.likes.partners > 0 && (
+                              <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
+                                <ThumbsUp className="h-3 w-3 text-yellow-600" />
+                                <span className="text-xs font-medium text-yellow-600">{work.likes.partners}</span>
+                                <span className="text-xs">🥇</span>
+                              </div>
+                            )}
+                            {work.likes.teachers > 0 && (
+                              <div className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-full">
+                                <ThumbsUp className="h-3 w-3 text-gray-600" />
+                                <span className="text-xs font-medium text-gray-600">{work.likes.teachers}</span>
+                                <span className="text-xs">🥈</span>
+                              </div>
+                            )}
+                            {work.likes.students > 0 && (
+                              <div className="flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-full">
+                                <ThumbsUp className="h-3 w-3 text-orange-600" />
+                                <span className="text-xs font-medium text-orange-600">{work.likes.students}</span>
+                                <span className="text-xs">🥉</span>
+                              </div>
+                            )}
                           </div>
                           <div className="flex items-center gap-1">
                             <Star className="h-4 w-4 text-yellow-500" />
@@ -654,6 +947,30 @@ export default function EtecbookMobileApp() {
                     </div>
                   </div>
                 ))}
+              </CardContent>
+            </Card>
+
+            {/* Legenda do Sistema de Curtidas */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="text-center space-y-2">
+                  <h4 className="font-medium text-base">Sistema de Curtidas por Categoria</h4>
+                  <div className="flex items-center justify-center gap-4 text-sm">
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs">🥇</span>
+                      <span className="text-yellow-600 font-medium">Parceiros</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs">🥈</span>
+                      <span className="text-gray-600 font-medium">Professores</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs">🥉</span>
+                      <span className="text-orange-600 font-medium">Alunos</span>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-500">Curtidas de parceiros e professores têm maior valor!</p>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
@@ -840,11 +1157,35 @@ export default function EtecbookMobileApp() {
                         </div>
 
                         <div className="flex items-center justify-between pt-3 border-t">
-                          <div className="flex items-center gap-6">
-                            <button className="flex items-center gap-2 text-red-600 hover:text-red-700 active:scale-95 transition-transform">
-                              <ThumbsUp className="h-5 w-5" />
-                              <span className="text-base">{work.likes}</span>
-                            </button>
+                          <div className="flex items-center gap-4">
+                            {/* Sistema de Curtidas Categorizadas */}
+                            <div className="flex items-center gap-2">
+                              {/* Botão para curtir como aluno (Bronze) */}
+                              <button className="flex items-center gap-1 bg-orange-50 hover:bg-orange-100 px-3 py-2 rounded-full active:scale-95 transition-transform">
+                                <ThumbsUp className="h-4 w-4 text-orange-600" />
+                                <span className="text-sm font-medium text-orange-600">{work.likes.students}</span>
+                                <span className="text-xs">🥉</span>
+                              </button>
+
+                              {/* Mostrar curtidas de professores se houver */}
+                              {work.likes.teachers > 0 && (
+                                <div className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-full">
+                                  <ThumbsUp className="h-4 w-4 text-gray-600" />
+                                  <span className="text-sm font-medium text-gray-600">{work.likes.teachers}</span>
+                                  <span className="text-xs">🥈</span>
+                                </div>
+                              )}
+
+                              {/* Mostrar curtidas de parceiros se houver */}
+                              {work.likes.partners > 0 && (
+                                <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
+                                  <ThumbsUp className="h-4 w-4 text-yellow-600" />
+                                  <span className="text-sm font-medium text-yellow-600">{work.likes.partners}</span>
+                                  <span className="text-xs">🥇</span>
+                                </div>
+                              )}
+                            </div>
+
                             <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 active:scale-95 transition-transform">
                               <MessageSquare className="h-5 w-5" />
                               <span className="text-base">{work.comments}</span>
@@ -853,6 +1194,19 @@ export default function EtecbookMobileApp() {
                           <Button variant="outline" size="sm" className="h-10 bg-transparent">
                             Ver Detalhes
                           </Button>
+                        </div>
+
+                        {/* Resumo de Curtidas por Categoria */}
+                        <div className="mt-3 p-2 bg-gray-50 rounded-lg">
+                          <div className="text-xs text-gray-600 text-center">
+                            Total: {work.likes.students + work.likes.teachers + work.likes.partners} curtidas
+                            {work.likes.partners > 0 && (
+                              <span className="ml-2 text-yellow-600 font-medium">• Reconhecido por parceiros! 🥇</span>
+                            )}
+                            {work.likes.teachers > 0 && (
+                              <span className="ml-2 text-gray-600 font-medium">• Aprovado por professores! 🥈</span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -864,54 +1218,367 @@ export default function EtecbookMobileApp() {
 
           {/* TCC & Ideias - Mobile Optimized */}
           <TabsContent value="tcc" className="space-y-4 mt-4">
+            {/* Gerenciamento do Grupo TCC */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Users className="h-5 w-5" />
+                  Meu Grupo de TCC
+                </CardTitle>
+                <CardDescription>Gerencie os membros do seu grupo de Trabalho de Conclusão de Curso</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Lista de Membros Selecionados */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-base">Membros do Grupo:</h4>
+                  <div className="space-y-2">
+                    {[
+                      {
+                        name: "João Silva",
+                        id: "joao",
+                        selected: true,
+                        role: "Líder",
+                        avatar: "/placeholder.svg?height=40&width=40&text=JS",
+                      },
+                      {
+                        name: "Maria Santos",
+                        id: "maria",
+                        selected: true,
+                        role: "Desenvolvedora",
+                        avatar: "/placeholder.svg?height=40&width=40&text=MS",
+                      },
+                      {
+                        name: "Pedro Lima",
+                        id: "pedro",
+                        selected: true,
+                        role: "Analista",
+                        avatar: "/placeholder.svg?height=40&width=40&text=PL",
+                      },
+                    ].map((member) => (
+                      <div key={member.id} className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                        <Avatar className="w-10 h-10">
+                          <AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
+                          <AvatarFallback>
+                            {member.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <p className="font-medium text-base">{member.name}</p>
+                          <p className="text-sm text-gray-600">{member.role}</p>
+                        </div>
+                        <Badge variant="secondary">Confirmado</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Adicionar Novos Membros */}
+                <div className="space-y-3 pt-4 border-t">
+                  <h4 className="font-medium text-base">Convidar Alunos:</h4>
+                  <div className="space-y-2">
+                    <Select>
+                      <SelectTrigger className="h-12 text-base">
+                        <SelectValue placeholder="Selecione um aluno da turma" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ana">Ana Costa - Desenvolvimento Frontend</SelectItem>
+                        <SelectItem value="carlos">Carlos Silva - Banco de Dados</SelectItem>
+                        <SelectItem value="beatriz">Beatriz Santos - Design UX/UI</SelectItem>
+                        <SelectItem value="lucas">Lucas Fernandes - Backend</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button className="w-full h-12 text-base bg-transparent" variant="outline">
+                      <Plus className="mr-2 h-5 w-5" />
+                      Enviar Convite
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Progresso Individual do TCC */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Award className="h-5 w-5" />
-                  Meu Progresso TCC
+                  Progresso do TCC - Grupo
                 </CardTitle>
+                <CardDescription>Acompanhe o progresso de cada membro do grupo</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="flex justify-between text-base">
-                    <span>Progresso Geral</span>
-                    <span className="font-bold">65%</span>
+                    <span>Progresso Geral do Grupo</span>
+                    <span className="font-bold">45%</span>
                   </div>
-                  <Progress value={65} className="h-3" />
+                  <Progress value={45} className="h-3" />
                 </div>
 
+                {/* Progresso por Membro */}
                 <div className="space-y-4">
                   {[
-                    { phase: "Escolha do Tema", completed: true },
-                    { phase: "Revisão Bibliográfica", completed: true },
-                    { phase: "Metodologia", completed: true },
-                    { phase: "Desenvolvimento", completed: false },
-                    { phase: "Testes", completed: false },
-                    { phase: "Documentação Final", completed: false },
-                  ].map((phase, index) => (
-                    <div key={index} className="flex items-center gap-4">
-                      <div
-                        className={`w-5 h-5 rounded-full flex-shrink-0 ${phase.completed ? "bg-green-500" : "bg-gray-300"}`}
-                      ></div>
-                      <span className={`text-base ${phase.completed ? "text-green-700" : "text-gray-600"}`}>
-                        {phase.phase}
-                      </span>
+                    { name: "João Silva", progress: 65, role: "Introdução e Metodologia", color: "bg-blue-500" },
+                    { name: "Maria Santos", progress: 40, role: "Desenvolvimento e Testes", color: "bg-green-500" },
+                    { name: "Pedro Lima", progress: 30, role: "Análise e Conclusão", color: "bg-purple-500" },
+                  ].map((member, index) => (
+                    <div key={index} className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-medium text-base">{member.name}</p>
+                          <p className="text-sm text-gray-600">{member.role}</p>
+                        </div>
+                        <span className="text-sm font-bold">{member.progress}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className={`h-2 rounded-full ${member.color}`}
+                          style={{ width: `${member.progress}%` }}
+                        ></div>
+                      </div>
                     </div>
                   ))}
                 </div>
-
-                <Button className="w-full h-12 text-base">
-                  <FileText className="mr-2 h-5 w-5" />
-                  Continuar TCC
-                </Button>
               </CardContent>
             </Card>
 
+            {/* Upload de Partes do TCC */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Upload className="h-5 w-5" />
+                  Minha Parte do TCC
+                </CardTitle>
+                <CardDescription>Faça upload da sua parte do Trabalho de Conclusão de Curso</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="tcc-section" className="text-base">
+                    Seção Responsável
+                  </Label>
+                  <Select>
+                    <SelectTrigger className="h-12 text-base">
+                      <SelectValue placeholder="Selecione sua seção" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="introducao">1. Introdução</SelectItem>
+                      <SelectItem value="revisao">2. Revisão Bibliográfica</SelectItem>
+                      <SelectItem value="metodologia">3. Metodologia</SelectItem>
+                      <SelectItem value="desenvolvimento">4. Desenvolvimento</SelectItem>
+                      <SelectItem value="testes">5. Testes e Validação</SelectItem>
+                      <SelectItem value="conclusao">6. Conclusão</SelectItem>
+                      <SelectItem value="referencias">7. Referências</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="tcc-description" className="text-base">
+                    Descrição da Seção
+                  </Label>
+                  <Textarea
+                    id="tcc-description"
+                    placeholder="Descreva brevemente o conteúdo da sua seção..."
+                    rows={3}
+                    className="text-base"
+                  />
+                </div>
+
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                  <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                  <p className="mt-2 text-base text-gray-600">Toque para selecionar sua parte do TCC</p>
+                  <p className="text-sm text-gray-500">Suporta: .pdf, .docx (máx. 50MB)</p>
+                </div>
+
+                <Button className="w-full h-12 text-base">
+                  <Upload className="mr-2 h-5 w-5" />
+                  Enviar Minha Parte
+                </Button>
+
+                {/* Partes já enviadas */}
+                <div className="space-y-3 pt-4 border-t">
+                  <h4 className="font-medium text-base">Partes Enviadas:</h4>
+                  <div className="space-y-2">
+                    {[
+                      { section: "1. Introdução", author: "João Silva", date: "15/02/2024", status: "Aprovado" },
+                      { section: "3. Metodologia", author: "João Silva", date: "10/02/2024", status: "Em Revisão" },
+                    ].map((part, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <p className="font-medium text-base">{part.section}</p>
+                          <p className="text-sm text-gray-600">
+                            por {part.author} • {part.date}
+                          </p>
+                        </div>
+                        <Badge variant={part.status === "Aprovado" ? "default" : "secondary"}>{part.status}</Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* TCC Compilado e Análise IA */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <FileText className="h-5 w-5" />
+                  TCC Completo
+                </CardTitle>
+                <CardDescription>Visualize e analise o TCC compilado com todas as partes do grupo</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Status do TCC Completo */}
+                <div className="p-4 bg-yellow-50 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Clock className="h-5 w-5 text-yellow-600" />
+                    <span className="font-medium text-base">Status: Em Desenvolvimento</span>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    3 de 7 seções enviadas. Aguardando: Revisão Bibliográfica, Desenvolvimento, Testes e Validação,
+                    Conclusão.
+                  </p>
+                </div>
+
+                {/* Seções do TCC */}
+                <div className="space-y-2">
+                  <h4 className="font-medium text-base">Estrutura do TCC:</h4>
+                  <div className="space-y-2">
+                    {[
+                      { section: "1. Introdução", status: "completed", author: "João Silva" },
+                      { section: "2. Revisão Bibliográfica", status: "pending", author: "Maria Santos" },
+                      { section: "3. Metodologia", status: "review", author: "João Silva" },
+                      { section: "4. Desenvolvimento", status: "pending", author: "Maria Santos" },
+                      { section: "5. Testes e Validação", status: "pending", author: "Pedro Lima" },
+                      { section: "6. Conclusão", status: "pending", author: "Pedro Lima" },
+                      { section: "7. Referências", status: "pending", author: "Todos" },
+                    ].map((item, index) => (
+                      <div key={index} className="flex items-center gap-3 p-3 border rounded-lg">
+                        <div
+                          className={`w-4 h-4 rounded-full flex-shrink-0 ${
+                            item.status === "completed"
+                              ? "bg-green-500"
+                              : item.status === "review"
+                                ? "bg-yellow-500"
+                                : "bg-gray-300"
+                          }`}
+                        ></div>
+                        <div className="flex-1">
+                          <p className="font-medium text-base">{item.section}</p>
+                          <p className="text-sm text-gray-600">Responsável: {item.author}</p>
+                        </div>
+                        <Badge
+                          variant={
+                            item.status === "completed" ? "default" : item.status === "review" ? "secondary" : "outline"
+                          }
+                        >
+                          {item.status === "completed"
+                            ? "Concluído"
+                            : item.status === "review"
+                              ? "Em Revisão"
+                              : "Pendente"}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Botões de Ação */}
+                <div className="space-y-3 pt-4 border-t">
+                  <Button className="w-full h-12 text-base bg-transparent" variant="outline" disabled>
+                    <FileText className="mr-2 h-5 w-5" />
+                    Gerar TCC Completo (Aguardando todas as partes)
+                  </Button>
+
+                  <Button className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-base" disabled>
+                    <Brain className="mr-2 h-5 w-5" />
+                    Analisar TCC com IA (Disponível após compilação)
+                  </Button>
+
+                  {/* Quando o TCC estiver completo, estes botões ficarão habilitados */}
+                  <div className="p-3 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-800 mb-2">
+                      <strong>Próximos passos:</strong>
+                    </p>
+                    <ul className="text-sm text-blue-700 space-y-1">
+                      <li>• Complete todas as seções pendentes</li>
+                      <li>• O sistema compilará automaticamente o TCC</li>
+                      <li>• A análise IA verificará formatação, coerência e qualidade</li>
+                      <li>• Você receberá feedback detalhado para melhorias</li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Histórico de Análises IA do TCC */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Brain className="h-5 w-5" />
+                  Histórico de Análises IA
+                </CardTitle>
+                <CardDescription>Acompanhe as análises anteriores do seu TCC</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {[
+                    {
+                      version: "Versão 1.0",
+                      date: "05/02/2024",
+                      score: 7.8,
+                      status: "Necessita Melhorias",
+                      feedback: "Estrutura boa, mas precisa de mais referências bibliográficas",
+                    },
+                    {
+                      version: "Versão 0.5",
+                      date: "28/01/2024",
+                      score: 6.5,
+                      status: "Em Desenvolvimento",
+                      feedback: "Introdução bem estruturada, aguardando demais seções",
+                    },
+                  ].map((analysis, index) => (
+                    <div key={index} className="p-4 border rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <p className="font-medium text-base">{analysis.version}</p>
+                          <p className="text-sm text-gray-600">{analysis.date}</p>
+                        </div>
+                        <div className="text-right">
+                          <div className="flex items-center gap-2">
+                            <Star className="h-4 w-4 text-yellow-500" />
+                            <span className="font-bold text-base">{analysis.score}</span>
+                          </div>
+                          <Badge
+                            variant={
+                              analysis.status === "Aprovado"
+                                ? "default"
+                                : analysis.status === "Necessita Melhorias"
+                                  ? "secondary"
+                                  : "outline"
+                            }
+                          >
+                            {analysis.status}
+                          </Badge>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-700 bg-gray-50 p-2 rounded">
+                        <strong>Feedback IA:</strong> {analysis.feedback}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Votação de Ideias - Mantido do código original */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <ThumbsUp className="h-5 w-5" />
-                  Votação de Ideias
+                  Votação de Ideias para TCC
                 </CardTitle>
                 <CardDescription>Vote nas melhores ideias para TCC da turma</CardDescription>
               </CardHeader>
@@ -1221,23 +1888,60 @@ export default function EtecbookMobileApp() {
                   <CardContent className="space-y-4">
                     {internshipVacancies.map((vacancy) => (
                       <div key={vacancy.id} className="p-4 border rounded-lg space-y-3">
-                        <h3 className="font-bold text-lg">{vacancy.role}</h3>
-                        <p className="text-base text-gray-700 flex items-center gap-2">
-                          <Building className="h-4 w-4 text-gray-500" />
-                          {vacancy.company}
-                        </p>
-                        <p className="text-base text-gray-600 flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-gray-500" />
-                          {vacancy.location}
-                        </p>
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h3 className="font-bold text-lg">{vacancy.role}</h3>
+                            <p className="text-base text-gray-700 flex items-center gap-2">
+                              <Building className="h-4 w-4 text-gray-500" />
+                              {vacancy.company}
+                            </p>
+                            <p className="text-base text-gray-600 flex items-center gap-2">
+                              <MapPin className="h-4 w-4 text-gray-500" />
+                              {vacancy.location}
+                            </p>
+                          </div>
+                          {/* Selo de Classificação */}
+                          <div
+                            className={`flex items-center gap-1 ${studentClassification.bgColor} px-3 py-2 rounded-full`}
+                          >
+                            <span className="text-lg">{studentClassification.badge}</span>
+                            <span className={`text-sm font-medium ${studentClassification.color}`}>
+                              {studentClassification.level}
+                            </span>
+                          </div>
+                        </div>
+
                         <p className="text-base leading-relaxed">{vacancy.description}</p>
                         <p className="text-sm text-gray-500">**Requisitos:** {vacancy.requirements}</p>
-                        <Button variant="link" className="p-0 h-auto text-base">
-                          <Link className="h-4 w-4 mr-1" />
-                          <a href={vacancy.link} target="_blank" rel="noopener noreferrer">
-                            Ver Detalhes e Candidatar
-                          </a>
-                        </Button>
+
+                        {/* Compatibilidade IA */}
+                        <div className="p-3 bg-blue-50 rounded-lg">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium text-blue-800">Compatibilidade IA</span>
+                            <span className="text-sm font-bold text-blue-600">87%</span>
+                          </div>
+                          <div className="w-full bg-blue-200 rounded-full h-2">
+                            <div className="bg-blue-600 h-2 rounded-full" style={{ width: "87%" }}></div>
+                          </div>
+                          <p className="text-xs text-blue-700 mt-1">
+                            Suas habilidades em React e Node.js são ideais para esta vaga!
+                          </p>
+                        </div>
+
+                        {/* Botões de Ação */}
+                        <div className="flex gap-2">
+                          <Button variant="outline" className="flex-1 h-12 bg-transparent text-base">
+                            <Link className="h-4 w-4 mr-1" />
+                            Ver Detalhes
+                          </Button>
+                          <Button
+                            className="flex-1 h-12 bg-green-600 hover:bg-green-700 text-base"
+                            onClick={() => setShowCurriculumModal(true)}
+                          >
+                            <User className="h-4 w-4 mr-1" />
+                            Enviar Currículo
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </CardContent>
@@ -1491,6 +2195,139 @@ export default function EtecbookMobileApp() {
                   <Settings className="mr-2 h-5 w-5" />
                   Salvar Alterações
                 </Button>
+              </CardContent>
+            </Card>
+
+            {/* Card de Classificação Profissional */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Award className="h-5 w-5" />
+                  Classificação Profissional IA
+                </CardTitle>
+                <CardDescription>Análise automática baseada em desempenho e engajamento</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Classificação Principal */}
+                <div className="text-center space-y-3">
+                  <div
+                    className={`inline-flex items-center gap-3 ${studentClassification.bgColor} px-6 py-4 rounded-full`}
+                  >
+                    <span className="text-3xl">{studentClassification.badge}</span>
+                    <div>
+                      <p className={`text-xl font-bold ${studentClassification.color}`}>
+                        {studentClassification.level}
+                      </p>
+                      <p className="text-sm text-gray-600">Score: {studentClassification.score.toFixed(1)}/10</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Fatores de Avaliação */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-base">Fatores de Avaliação:</h4>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Qualidade dos Trabalhos</span>
+                      <span className="text-sm font-medium">{studentClassification.factors.workQuality}/10</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-blue-600 h-2 rounded-full"
+                        style={{ width: `${studentClassification.factors.workQuality * 10}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Engajamento Social</span>
+                      <span className="text-sm font-medium">{studentClassification.factors.socialEngagement}/10</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-green-600 h-2 rounded-full"
+                        style={{ width: `${studentClassification.factors.socialEngagement * 10}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Progresso TCC</span>
+                      <span className="text-sm font-medium">{studentClassification.factors.tccProgress}/10</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-purple-600 h-2 rounded-full"
+                        style={{ width: `${studentClassification.factors.tccProgress * 10}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Qualidade da Escrita</span>
+                      <span className="text-sm font-medium">{studentClassification.factors.writingQuality}/10</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-yellow-600 h-2 rounded-full"
+                        style={{ width: `${studentClassification.factors.writingQuality * 10}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Habilidades Técnicas</span>
+                      <span className="text-sm font-medium">{studentClassification.factors.professionalSkills}/10</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-red-600 h-2 rounded-full"
+                        style={{ width: `${studentClassification.factors.professionalSkills * 10}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pontos Fortes e Melhorias */}
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-sm text-green-700">Pontos Fortes:</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {studentClassification.strengths.map((strength, index) => (
+                        <Badge key={index} variant="secondary" className="bg-green-50 text-green-700">
+                          {strength}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-sm text-orange-700">Áreas para Melhoria:</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {studentClassification.improvements.map((improvement, index) => (
+                        <Badge key={index} variant="outline" className="border-orange-300 text-orange-700">
+                          {improvement}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Atualização */}
+                <div className="text-center pt-3 border-t">
+                  <p className="text-xs text-gray-500">
+                    Última atualização: Hoje às 14:30 • Próxima análise: Em 7 dias
+                  </p>
+                  <Button variant="outline" size="sm" className="mt-2 h-8 text-xs bg-transparent">
+                    <Brain className="h-3 w-3 mr-1" />
+                    Solicitar Reavaliação IA
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
