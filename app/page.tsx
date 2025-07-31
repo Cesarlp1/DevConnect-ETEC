@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
   BookOpen,
   Upload,
@@ -32,7 +33,6 @@ import {
   Briefcase,
   Building,
   Megaphone,
-  CalendarCheck,
   MapPin,
   Link,
   Clock,
@@ -40,15 +40,20 @@ import {
   Timer,
   Video,
   PlayCircle,
+  Menu,
+  Home,
+  User,
+  Plus,
 } from "lucide-react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
-export default function EtecbookApp() {
+export default function EtecbookMobileApp() {
   const [activeTab, setActiveTab] = useState("dashboard")
   const [selectedDate, setSelectedDate] = useState<Date>()
   const [userType, setUserType] = useState<"student" | "partner" | "staff" | null>(null)
   const [loginData, setLoginData] = useState({ email: "", password: "", cnpj: "", institutionalId: "" })
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   // Dados mockados para demonstração
   const [userProfile, setUserProfile] = useState({
@@ -215,6 +220,7 @@ export default function EtecbookApp() {
       likes: 85,
       comments: 12,
       duration: "15:30",
+      videoUrl: "https://www.youtube.com/watch?v=dpw9EHGf_1Q",
     },
     {
       id: 2,
@@ -226,6 +232,7 @@ export default function EtecbookApp() {
       likes: 70,
       comments: 8,
       duration: "10:45",
+      videoUrl: "https://www.youtube.com/watch?v=dpw9EHGf_1Q",
     },
     {
       id: 3,
@@ -237,6 +244,7 @@ export default function EtecbookApp() {
       likes: 110,
       comments: 15,
       duration: "20:00",
+      videoUrl: "https://www.youtube.com/watch?v=dpw9EHGf_1Q",
     },
   ])
 
@@ -261,78 +269,110 @@ export default function EtecbookApp() {
     setUserProfile((prev) => ({ ...prev, [id]: value }))
   }
 
+  // Menu items para navegação mobile
+  const menuItems = [
+    { id: "feed", label: "Feed", icon: Home },
+    { id: "dashboard", label: "Dashboard", icon: TrendingUp },
+    { id: "trabalhos", label: "Trabalhos", icon: FileText },
+    { id: "tcc", label: "TCC & Ideias", icon: Award },
+    { id: "agenda", label: "Agenda", icon: CalendarIcon },
+    { id: "comunidade", label: "Comunidade", icon: Users },
+    { id: "parceiros", label: "Parceiros", icon: Briefcase },
+    { id: "videos", label: "Vídeos", icon: Video },
+    { id: "perfil", label: "Perfil", icon: User },
+  ]
+
   if (userType === null) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
+        <Card className="w-full max-w-sm mx-4">
+          <CardHeader className="text-center pb-4">
             <div className="mx-auto mb-4 w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center">
               <GraduationCap className="h-8 w-8 text-white" />
             </div>
-            <CardTitle className="text-2xl font-bold text-blue-900">DevConnect ETEC</CardTitle>
-            <CardDescription>Sua rede social acadêmica da ETEC</CardDescription>
+            <CardTitle className="text-xl font-bold text-blue-900">DevConnect ETEC</CardTitle>
+            <CardDescription className="text-sm">Sua rede social acadêmica da ETEC</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 px-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email Institucional</Label>
+              <Label htmlFor="email" className="text-sm">
+                Email Institucional
+              </Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="seu.email@etec.sp.gov.br"
                 value={loginData.email}
                 onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                className="h-12"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
+              <Label htmlFor="password" className="text-sm">
+                Senha
+              </Label>
               <Input
                 id="password"
                 type="password"
                 placeholder="Sua senha"
                 value={loginData.password}
                 onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                className="h-12"
               />
             </div>
-            <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => setUserType("student")}>
+            <Button
+              className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-base"
+              onClick={() => setUserType("student")}
+            >
               Entrar como Aluno
             </Button>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-white px-2 text-muted-foreground">ou</span>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="cnpj">CNPJ da Empresa</Label>
+              <Label htmlFor="cnpj" className="text-sm">
+                CNPJ da Empresa
+              </Label>
               <Input
                 id="cnpj"
                 type="text"
                 placeholder="XX.XXX.XXX/XXXX-XX"
                 value={loginData.cnpj}
                 onChange={(e) => setLoginData({ ...loginData, cnpj: e.target.value })}
+                className="h-12"
               />
             </div>
-            <Button variant="outline" className="w-full bg-transparent" onClick={() => setUserType("partner")}>
+            <Button
+              variant="outline"
+              className="w-full h-12 bg-transparent text-base"
+              onClick={() => setUserType("partner")}
+            >
               Entrar como Parceiro
             </Button>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-white px-2 text-muted-foreground">ou</span>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="institutional-id">ID Institucional</Label>
+              <Label htmlFor="institutional-id" className="text-sm">
+                ID Institucional
+              </Label>
               <Input
                 id="institutional-id"
                 type="text"
                 placeholder="Seu ID de Coordenador/Professor"
                 value={loginData.institutionalId}
                 onChange={(e) => setLoginData({ ...loginData, institutionalId: e.target.value })}
+                className="h-12"
               />
             </div>
             <Button
               variant="secondary"
-              className="w-full bg-gray-700 hover:bg-gray-800 text-white"
+              className="w-full h-12 bg-gray-700 hover:bg-gray-800 text-white text-base"
               onClick={() => setUserType("staff")}
             >
               Entrar como Equipe
             </Button>
-            <p className="text-xs text-center text-gray-600">Acesso restrito para alunos e empresas parceiras</p>
+            <p className="text-xs text-center text-gray-600 px-2">Acesso restrito para alunos e empresas parceiras</p>
           </CardContent>
         </Card>
       </div>
@@ -341,363 +381,393 @@ export default function EtecbookApp() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+      {/* Mobile Header */}
+      <header className="bg-white shadow-sm border-b sticky top-0 z-50">
+        <div className="px-4 py-3">
+          <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
+              <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="md:hidden">
+                    <Menu className="h-6 w-6" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-80 p-0">
+                  <div className="flex flex-col h-full">
+                    <div className="p-6 border-b">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                          <GraduationCap className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                          <h2 className="text-lg font-bold text-blue-900">DevConnect ETEC</h2>
+                          <p className="text-sm text-gray-600">{userProfile.name}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <nav className="flex-1 p-4">
+                      <div className="space-y-2">
+                        {menuItems.map((item) => {
+                          const Icon = item.icon
+                          return (
+                            <Button
+                              key={item.id}
+                              variant={activeTab === item.id ? "default" : "ghost"}
+                              className="w-full justify-start h-12 text-base"
+                              onClick={() => {
+                                setActiveTab(item.id)
+                                setIsMenuOpen(false)
+                              }}
+                            >
+                              <Icon className="h-5 w-5 mr-3" />
+                              {item.label}
+                            </Button>
+                          )
+                        })}
+                        {userType === "staff" && (
+                          <Button
+                            variant={activeTab === "admin" ? "default" : "ghost"}
+                            className="w-full justify-start h-12 text-base"
+                            onClick={() => {
+                              setActiveTab("admin")
+                              setIsMenuOpen(false)
+                            }}
+                          >
+                            <Settings className="h-5 w-5 mr-3" />
+                            Administração
+                          </Button>
+                        )}
+                      </div>
+                    </nav>
+                    <div className="p-4 border-t">
+                      <Button
+                        variant="outline"
+                        className="w-full h-12 bg-transparent"
+                        onClick={() => setUserType(null)}
+                      >
+                        Sair
+                      </Button>
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
               <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                 <GraduationCap className="h-5 w-5 text-white" />
               </div>
-              <h1 className="text-xl font-bold text-blue-900">DevConnect ETEC</h1>
+              <h1 className="text-lg font-bold text-blue-900 hidden sm:block">DevConnect ETEC</h1>
             </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="icon">
+            <div className="flex items-center space-x-2">
+              <Button variant="ghost" size="icon" className="relative">
                 <Bell className="h-5 w-5" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs"></span>
               </Button>
-              <Avatar>
+              <Avatar className="w-8 h-8">
                 <AvatarImage src={userProfile.avatar || "/placeholder.svg"} alt={userProfile.name} />
                 <AvatarFallback>JS</AvatarFallback>
               </Avatar>
-              <Button variant="ghost" onClick={() => setUserType(null)}>
-                Sair
-              </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Desktop Navigation - Hidden on mobile */}
+      <div className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
-            <TabsTrigger value="feed">Feed</TabsTrigger>
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="trabalhos">Trabalhos</TabsTrigger>
-            <TabsTrigger value="tcc">TCC & Ideias</TabsTrigger>
-            <TabsTrigger value="agenda">Agenda</TabsTrigger>
-            <TabsTrigger value="comunidade">Comunidade</TabsTrigger>
-            <TabsTrigger value="parceiros">Parceiros</TabsTrigger>
-            <TabsTrigger value="videos">Vídeos</TabsTrigger>
-            <TabsTrigger value="perfil">Perfil</TabsTrigger>
-            {userType === "staff" && <TabsTrigger value="admin">Administração</TabsTrigger>}
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 gap-1">
+            <TabsTrigger value="feed" className="text-xs">
+              Feed
+            </TabsTrigger>
+            <TabsTrigger value="dashboard" className="text-xs">
+              Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="trabalhos" className="text-xs">
+              Trabalhos
+            </TabsTrigger>
+            <TabsTrigger value="tcc" className="text-xs">
+              TCC
+            </TabsTrigger>
+            <TabsTrigger value="agenda" className="text-xs">
+              Agenda
+            </TabsTrigger>
+            <TabsTrigger value="comunidade" className="text-xs">
+              Comunidade
+            </TabsTrigger>
+            <TabsTrigger value="parceiros" className="text-xs">
+              Parceiros
+            </TabsTrigger>
+            <TabsTrigger value="videos" className="text-xs">
+              Vídeos
+            </TabsTrigger>
+            <TabsTrigger value="perfil" className="text-xs">
+              Perfil
+            </TabsTrigger>
+            {userType === "staff" && (
+              <TabsTrigger value="admin" className="text-xs">
+                Admin
+              </TabsTrigger>
+            )}
           </TabsList>
+        </Tabs>
+      </div>
 
+      {/* Main Content */}
+      <div className="px-4 pb-20 md:pb-8 max-w-7xl mx-auto">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           {/* Feed Social */}
-          <TabsContent value="feed" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Feed Principal */}
-              <div className="lg:col-span-2 space-y-6">
-                {/* Criar Post */}
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3 mb-4">
-                      <Avatar>
-                        <AvatarImage src={userProfile.avatar || "/placeholder.svg"} alt={userProfile.name} />
-                        <AvatarFallback>JS</AvatarFallback>
+          <TabsContent value="feed" className="space-y-4 mt-4">
+            {/* Criar Post - Mobile Optimized */}
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3 mb-4">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={userProfile.avatar || "/placeholder.svg"} alt={userProfile.name} />
+                    <AvatarFallback>JS</AvatarFallback>
+                  </Avatar>
+                  <Textarea
+                    placeholder="Compartilhe suas conquistas, projetos ou dúvidas..."
+                    rows={3}
+                    className="flex-1 text-base"
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" className="h-10 bg-transparent">
+                      <Upload className="h-4 w-4 mr-1" />
+                      Foto
+                    </Button>
+                    <Button variant="outline" size="sm" className="h-10 bg-transparent">
+                      <FileText className="h-4 w-4 mr-1" />
+                      Trabalho
+                    </Button>
+                  </div>
+                  <Button size="sm" className="h-10 px-6">
+                    Publicar
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Posts do Feed - Mobile Optimized */}
+            {posts.map((post) => (
+              <Card key={post.id}>
+                <CardContent className="p-0">
+                  {/* Header do Post */}
+                  <div className="p-4 pb-0">
+                    <div className="flex items-center gap-3 mb-3">
+                      <Avatar className="w-10 h-10">
+                        <AvatarImage src={post.avatar || "/placeholder.svg"} alt={post.author} />
+                        <AvatarFallback>
+                          {post.author
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")}
+                        </AvatarFallback>
                       </Avatar>
-                      <Textarea
-                        placeholder="Compartilhe suas conquistas, projetos ou dúvidas com a turma..."
-                        rows={2}
-                        className="flex-1"
-                      />
+                      <div className="flex-1">
+                        <p className="font-medium text-base">{post.author}</p>
+                        <p className="text-sm text-gray-600">{post.time}</p>
+                      </div>
+                      <Badge variant="outline" className="text-xs">
+                        {post.type === "photo" ? "📸" : post.type === "work" ? "💻" : "🎓"}
+                      </Badge>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm">
-                          <Upload className="h-4 w-4 mr-1" />
-                          Foto
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <FileText className="h-4 w-4 mr-1" />
-                          Trabalho
-                        </Button>
+                    <p className="mb-3 text-base leading-relaxed">{post.content}</p>
+                  </div>
+
+                  {/* Imagem do Post */}
+                  <div className="relative">
+                    <img
+                      src={post.image || "/placeholder.svg"}
+                      alt="Post"
+                      className="w-full h-64 object-cover cursor-pointer hover:opacity-95 transition-opacity"
+                    />
+                  </div>
+
+                  {/* Ações do Post */}
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-6">
+                        <button className="flex items-center gap-2 text-red-600 hover:text-red-700 active:scale-95 transition-transform">
+                          <ThumbsUp className="h-6 w-6" />
+                          <span className="font-medium text-base">{post.likes}</span>
+                        </button>
+                        <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 active:scale-95 transition-transform">
+                          <MessageSquare className="h-6 w-6" />
+                          <span className="text-base">{post.comments}</span>
+                        </button>
                       </div>
-                      <Button size="sm">Publicar</Button>
                     </div>
-                  </CardContent>
-                </Card>
 
-                {/* Posts do Feed */}
-                {posts.map((post) => (
-                  <Card key={post.id}>
-                    <CardContent className="p-0">
-                      {/* Header do Post */}
-                      <div className="p-4 pb-0">
-                        <div className="flex items-center gap-3 mb-3">
-                          <Avatar>
-                            <AvatarImage src={post.avatar || "/placeholder.svg"} alt={post.author} />
-                            <AvatarFallback>
-                              {post.author
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1">
-                            <p className="font-medium">{post.author}</p>
-                            <p className="text-sm text-gray-600">{post.time}</p>
-                          </div>
-                          <Badge variant="outline">
-                            {post.type === "photo" ? "📸" : post.type === "work" ? "💻" : "🎓"}
-                          </Badge>
-                        </div>
-                        <p className="mb-3">{post.content}</p>
-                      </div>
-
-                      {/* Imagem do Post */}
-                      <div className="relative">
-                        <img
-                          src={post.image || "/placeholder.svg"}
-                          alt="Post"
-                          className="w-full h-64 object-cover cursor-pointer hover:opacity-95 transition-opacity"
-                        />
-                      </div>
-
-                      {/* Ações do Post */}
-                      <div className="p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-4">
-                            <button className="flex items-center gap-1 text-red-600 hover:text-red-700">
-                              <ThumbsUp className="h-5 w-5" />
-                              <span className="font-medium">{post.likes}</span>
-                            </button>
-                            <button className="flex items-center gap-1 text-blue-600 hover:text-blue-700">
-                              <MessageSquare className="h-5 w-5" />
-                              <span>{post.comments}</span>
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* Comentários */}
-                        <div className="space-y-2 pt-2 border-t">
-                          <div className="flex items-start gap-2">
-                            <Avatar className="w-6 h-6">
-                              <AvatarFallback className="text-xs">MJ</AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 bg-gray-50 rounded-lg p-2">
-                              <p className="text-sm">
-                                <span className="font-medium">Maria João:</span> Parabéns! Ficou incrível! 👏
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Avatar className="w-6 h-6">
-                              <AvatarImage src={userProfile.avatar || "/placeholder.svg"} alt={userProfile.name} />
-                              <AvatarFallback className="text-xs">JS</AvatarFallback>
-                            </Avatar>
-                            <Input placeholder="Escreva um comentário..." className="flex-1 h-8" />
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              {/* Sidebar Direita */}
-              <div className="space-y-6">
-                {/* Trabalhos em Destaque */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">🏆 Trabalhos em Destaque</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {workSubmissions.slice(0, 2).map((work) => (
-                      <div key={work.id} className="space-y-2">
-                        <img
-                          src={work.image || "/placeholder.svg"}
-                          alt={work.title}
-                          className="w-full h-24 object-cover rounded-lg cursor-pointer hover:opacity-95"
-                        />
-                        <div>
-                          <p className="font-medium text-sm">{work.title}</p>
-                          <p className="text-xs text-gray-600">por {work.author}</p>
-                          <div className="flex items-center justify-between mt-1">
-                            <div className="flex items-center gap-1">
-                              <ThumbsUp className="h-3 w-3 text-red-500" />
-                              <span className="text-xs">{work.likes}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Star className="h-3 w-3 text-yellow-500" />
-                              <span className="text-xs">{work.aiScore}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
-
-                {/* Alunos Online */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">🟢 Alunos Online</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {[
-                        { name: "Ana Costa", status: "Estudando React" },
-                        { name: "Pedro Lima", status: "Fazendo TCC" },
-                        { name: "Carla Santos", status: "Online" },
-                        { name: "Bruno Silva", status: "Programando" },
-                      ].map((student, index) => (
-                        <div key={index} className="flex items-center gap-2">
-                          <div className="relative">
-                            <Avatar className="w-8 h-8">
-                              <AvatarFallback className="text-xs">
-                                {student.name
-                                  .split(" ")
-                                  .map((n) => n[0])
-                                  .join("")}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-sm font-medium">{student.name}</p>
-                            <p className="text-xs text-gray-600">{student.status}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Conquistas Recentes */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">🎖️ Conquistas</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2">
-                      {[
-                        { achievement: "Primeiro TCC aprovado!", user: "Maria Santos" },
-                        { achievement: "10 trabalhos com nota máxima", user: "João Silva" },
-                        { achievement: "Projeto mais curtido do mês", user: "Ana Costa" },
-                      ].map((item, index) => (
-                        <div key={index} className="p-2 bg-yellow-50 rounded-lg">
-                          <p className="text-sm font-medium">{item.achievement}</p>
-                          <p className="text-xs text-gray-600">{item.user}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          </TabsContent>
-
-          {/* Dashboard */}
-          <TabsContent value="dashboard" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Trabalhos Pendentes</CardTitle>
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">2</div>
-                  <p className="text-xs text-muted-foreground">Próximo prazo em 3 dias</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Análises IA</CardTitle>
-                  <Brain className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">8</div>
-                  <p className="text-xs text-muted-foreground">Trabalhos analisados este mês</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Progresso TCC</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">65%</div>
-                  <Progress value={65} className="mt-2" />
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Timer className="h-5 w-5" />
-                    Próximas Entregas
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {assignments
-                    .filter((a) => a.status === "pending")
-                    .map((assignment) => (
-                      <div
-                        key={assignment.id}
-                        className="flex items-center justify-between p-3 bg-orange-50 rounded-lg"
-                      >
-                        <div>
-                          <p className="font-medium">{assignment.title}</p>
-                          <p className="text-sm text-gray-600">
-                            Prazo: {format(new Date(assignment.dueDate), "dd/MM/yyyy", { locale: ptBR })}
+                    {/* Comentários */}
+                    <div className="space-y-3 pt-3 border-t">
+                      <div className="flex items-start gap-3">
+                        <Avatar className="w-8 h-8">
+                          <AvatarFallback className="text-xs">MJ</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 bg-gray-50 rounded-lg p-3">
+                          <p className="text-sm">
+                            <span className="font-medium">Maria João:</span> Parabéns! Ficou incrível! 👏
                           </p>
                         </div>
-                        <Badge variant="outline" className="text-orange-600 border-orange-600">
-                          {assignment.timeLeft}
-                        </Badge>
                       </div>
-                    ))}
+                      <div className="flex items-center gap-3">
+                        <Avatar className="w-8 h-8">
+                          <AvatarImage src={userProfile.avatar || "/placeholder.svg"} alt={userProfile.name} />
+                          <AvatarFallback className="text-xs">JS</AvatarFallback>
+                        </Avatar>
+                        <Input placeholder="Escreva um comentário..." className="flex-1 h-10 text-base" />
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+
+            {/* Trabalhos em Destaque - Mobile */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">🏆 Trabalhos em Destaque</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {workSubmissions.slice(0, 2).map((work) => (
+                  <div key={work.id} className="space-y-3">
+                    <img
+                      src={work.image || "/placeholder.svg"}
+                      alt={work.title}
+                      className="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-95"
+                    />
+                    <div>
+                      <p className="font-medium text-base">{work.title}</p>
+                      <p className="text-sm text-gray-600">por {work.author}</p>
+                      <div className="flex items-center justify-between mt-2">
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-1">
+                            <ThumbsUp className="h-4 w-4 text-red-500" />
+                            <span className="text-sm">{work.likes}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Star className="h-4 w-4 text-yellow-500" />
+                            <span className="text-sm">{work.aiScore}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Dashboard - Mobile Optimized */}
+          <TabsContent value="dashboard" className="space-y-4 mt-4">
+            <div className="grid grid-cols-1 gap-4">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-base font-medium">Trabalhos Pendentes</CardTitle>
+                  <Clock className="h-5 w-5 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">2</div>
+                  <p className="text-sm text-muted-foreground">Próximo prazo em 3 dias</p>
                 </CardContent>
               </Card>
 
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CalendarIcon className="h-5 w-5" />
-                    Próximos Eventos
-                  </CardTitle>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-base font-medium">Análises IA</CardTitle>
+                  <Brain className="h-5 w-5 text-muted-foreground" />
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  {events.map((event, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                      <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                      <div>
-                        <p className="font-medium">{event.title}</p>
-                        <p className="text-sm text-gray-600">
-                          {format(new Date(event.date), "dd/MM/yyyy", { locale: ptBR })}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                <CardContent>
+                  <div className="text-3xl font-bold">8</div>
+                  <p className="text-sm text-muted-foreground">Trabalhos analisados este mês</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-base font-medium">Progresso TCC</CardTitle>
+                  <TrendingUp className="h-5 w-5 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">65%</div>
+                  <Progress value={65} className="mt-3" />
                 </CardContent>
               </Card>
             </div>
-          </TabsContent>
 
-          {/* Trabalhos */}
-          <TabsContent value="trabalhos" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Timer className="h-5 w-5" />
+                  Próximas Entregas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {assignments
+                  .filter((a) => a.status === "pending")
+                  .map((assignment) => (
+                    <div key={assignment.id} className="flex items-center justify-between p-4 bg-orange-50 rounded-lg">
+                      <div className="flex-1">
+                        <p className="font-medium text-base">{assignment.title}</p>
+                        <p className="text-sm text-gray-600">
+                          Prazo: {format(new Date(assignment.dueDate), "dd/MM/yyyy", { locale: ptBR })}
+                        </p>
+                      </div>
+                      <Badge variant="outline" className="text-orange-600 border-orange-600 ml-2">
+                        {assignment.timeLeft}
+                      </Badge>
+                    </div>
+                  ))}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <CalendarIcon className="h-5 w-5" />
+                  Próximos Eventos
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {events.map((event, index) => (
+                  <div key={index} className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
+                    <div className="w-3 h-3 bg-blue-600 rounded-full flex-shrink-0"></div>
+                    <div className="flex-1">
+                      <p className="font-medium text-base">{event.title}</p>
+                      <p className="text-sm text-gray-600">
+                        {format(new Date(event.date), "dd/MM/yyyy", { locale: ptBR })}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Trabalhos - Mobile Optimized */}
+          <TabsContent value="trabalhos" className="space-y-4 mt-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <Upload className="h-5 w-5" />
                   Enviar Trabalho para Análise IA
                 </CardTitle>
-                <CardDescription>Faça upload do seu trabalho e receba feedback inteligente em minutos</CardDescription>
+                <CardDescription>Faça upload do seu trabalho e receba feedback inteligente</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="title">Título do Trabalho</Label>
-                    <Input id="title" placeholder="Ex: Sistema de Gestão de Biblioteca" />
+                    <Label htmlFor="title" className="text-base">
+                      Título do Trabalho
+                    </Label>
+                    <Input id="title" placeholder="Ex: Sistema de Gestão de Biblioteca" className="h-12 text-base" />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="subject">Disciplina</Label>
+                    <Label htmlFor="subject" className="text-base">
+                      Disciplina
+                    </Label>
                     <Select>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-12 text-base">
                         <SelectValue placeholder="Selecione a disciplina" />
                       </SelectTrigger>
                       <SelectContent>
@@ -710,18 +780,23 @@ export default function EtecbookApp() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="description">Descrição</Label>
-                  <Textarea id="description" placeholder="Descreva brevemente seu trabalho..." rows={3} />
+                  <Label htmlFor="description" className="text-base">
+                    Descrição
+                  </Label>
+                  <Textarea
+                    id="description"
+                    placeholder="Descreva brevemente seu trabalho..."
+                    rows={4}
+                    className="text-base"
+                  />
                 </div>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
                   <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                  <p className="mt-2 text-sm text-gray-600">
-                    Arraste e solte seus arquivos aqui ou clique para selecionar
-                  </p>
-                  <p className="text-xs text-gray-500">Suporta: .pdf, .docx, .zip, .rar (máx. 50MB)</p>
+                  <p className="mt-2 text-base text-gray-600">Toque para selecionar arquivos</p>
+                  <p className="text-sm text-gray-500">Suporta: .pdf, .docx, .zip, .rar (máx. 50MB)</p>
                 </div>
-                <Button className="w-full bg-green-600 hover:bg-green-700">
-                  <Brain className="mr-2 h-4 w-4" />
+                <Button className="w-full h-12 bg-green-600 hover:bg-green-700 text-base">
+                  <Brain className="mr-2 h-5 w-5" />
                   Analisar com IA
                 </Button>
               </CardContent>
@@ -729,14 +804,13 @@ export default function EtecbookApp() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <Award className="h-5 w-5" />
                   Galeria de Trabalhos da Turma
                 </CardTitle>
-                <CardDescription>Veja, curta e comente os trabalhos dos seus colegas</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-6">
                   {workSubmissions.map((work) => (
                     <div key={work.id} className="border rounded-lg overflow-hidden">
                       <img
@@ -745,38 +819,38 @@ export default function EtecbookApp() {
                         className="w-full h-48 object-cover cursor-pointer hover:opacity-95"
                       />
                       <div className="p-4">
-                        <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-start justify-between mb-3">
                           <div className="flex-1">
-                            <h3 className="font-medium">{work.title}</h3>
-                            <p className="text-sm text-gray-600 mb-2">{work.description}</p>
-                            <p className="text-xs text-gray-500">por {work.author}</p>
+                            <h3 className="font-medium text-lg">{work.title}</h3>
+                            <p className="text-base text-gray-600 mb-2">{work.description}</p>
+                            <p className="text-sm text-gray-500">por {work.author}</p>
                           </div>
-                          <div className="flex items-center gap-1 bg-green-50 px-2 py-1 rounded">
-                            <Brain className="h-3 w-3 text-green-600" />
-                            <span className="text-sm font-medium text-green-600">{work.aiScore}</span>
+                          <div className="flex items-center gap-1 bg-green-50 px-3 py-2 rounded ml-3">
+                            <Brain className="h-4 w-4 text-green-600" />
+                            <span className="text-base font-medium text-green-600">{work.aiScore}</span>
                           </div>
                         </div>
 
-                        <div className="flex flex-wrap gap-1 mb-3">
+                        <div className="flex flex-wrap gap-2 mb-4">
                           {work.tags.map((tag, index) => (
-                            <Badge key={index} variant="secondary" className="text-xs">
+                            <Badge key={index} variant="secondary" className="text-sm">
                               {tag}
                             </Badge>
                           ))}
                         </div>
 
-                        <div className="flex items-center justify-between pt-2 border-t">
-                          <div className="flex items-center gap-4">
-                            <button className="flex items-center gap-1 text-red-600 hover:text-red-700">
-                              <ThumbsUp className="h-4 w-4" />
-                              <span className="text-sm">{work.likes}</span>
+                        <div className="flex items-center justify-between pt-3 border-t">
+                          <div className="flex items-center gap-6">
+                            <button className="flex items-center gap-2 text-red-600 hover:text-red-700 active:scale-95 transition-transform">
+                              <ThumbsUp className="h-5 w-5" />
+                              <span className="text-base">{work.likes}</span>
                             </button>
-                            <button className="flex items-center gap-1 text-blue-600 hover:text-blue-700">
-                              <MessageSquare className="h-4 w-4" />
-                              <span className="text-sm">{work.comments}</span>
+                            <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 active:scale-95 transition-transform">
+                              <MessageSquare className="h-5 w-5" />
+                              <span className="text-base">{work.comments}</span>
                             </button>
                           </div>
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" className="h-10 bg-transparent">
                             Ver Detalhes
                           </Button>
                         </div>
@@ -786,212 +860,147 @@ export default function EtecbookApp() {
                 </div>
               </CardContent>
             </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Histórico de Análises</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {[
-                    { title: "Sistema CRUD em PHP", date: "10/02/2024", score: 8.5, status: "Aprovado" },
-                    { title: "Algoritmo de Busca", date: "05/02/2024", score: 7.2, status: "Revisar" },
-                    { title: "Interface React", date: "28/01/2024", score: 9.1, status: "Excelente" },
-                  ].map((analysis, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <p className="font-medium">{analysis.title}</p>
-                        <p className="text-sm text-gray-600">{analysis.date}</p>
-                      </div>
-                      <div className="text-right">
-                        <div className="flex items-center gap-2">
-                          <Star className="h-4 w-4 text-yellow-500" />
-                          <span className="font-bold">{analysis.score}</span>
-                        </div>
-                        <Badge
-                          variant={
-                            analysis.status === "Excelente"
-                              ? "default"
-                              : analysis.status === "Aprovado"
-                                ? "secondary"
-                                : "destructive"
-                          }
-                        >
-                          {analysis.status}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
           </TabsContent>
 
-          {/* TCC & Ideias */}
-          <TabsContent value="tcc" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Award className="h-5 w-5" />
-                    Meu Progresso TCC
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Progresso Geral</span>
-                      <span>65%</span>
-                    </div>
-                    <Progress value={65} />
-                  </div>
-
-                  <div className="space-y-3">
-                    {[
-                      { phase: "Escolha do Tema", completed: true },
-                      { phase: "Revisão Bibliográfica", completed: true },
-                      { phase: "Metodologia", completed: true },
-                      { phase: "Desenvolvimento", completed: false },
-                      { phase: "Testes", completed: false },
-                      { phase: "Documentação Final", completed: false },
-                    ].map((phase, index) => (
-                      <div key={index} className="flex items-center gap-3">
-                        <div
-                          className={`w-4 h-4 rounded-full ${phase.completed ? "bg-green-500" : "bg-gray-300"}`}
-                        ></div>
-                        <span className={phase.completed ? "text-green-700" : "text-gray-600"}>{phase.phase}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <Button className="w-full">
-                    <FileText className="mr-2 h-4 w-4" />
-                    Continuar TCC
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <ThumbsUp className="h-5 w-5" />
-                    Votação de Ideias
-                  </CardTitle>
-                  <CardDescription>Vote nas melhores ideias para TCC da turma</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {tccIdeas.map((idea) => (
-                    <div key={idea.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <p className="font-medium">{idea.title}</p>
-                        <Badge variant="outline">{idea.category}</Badge>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm">
-                          <ThumbsUp className="h-4 w-4 mr-1" />
-                          {idea.votes}
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-
-                  <Button variant="outline" className="w-full bg-transparent">
-                    Propor Nova Ideia
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-
+          {/* TCC & Ideias - Mobile Optimized */}
+          <TabsContent value="tcc" className="space-y-4 mt-4">
             <Card>
               <CardHeader>
-                <CardTitle>Biblioteca de Recursos</CardTitle>
-                <CardDescription>Materiais compartilhados pela comunidade para auxiliar nos trabalhos</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {[
-                    { title: "Guia de Metodologia Científica", type: "PDF", downloads: 45 },
-                    { title: "Templates de Documentação", type: "ZIP", downloads: 32 },
-                    { title: "Artigos sobre IA", type: "Pasta", downloads: 28 },
-                    { title: "Exemplos de Código", type: "GitHub", downloads: 67 },
-                    { title: "Normas ABNT", type: "PDF", downloads: 89 },
-                    { title: "Banco de Dados Exemplo", type: "SQL", downloads: 23 },
-                  ].map((resource, index) => (
-                    <div key={index} className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
-                      <div className="flex items-center gap-2 mb-2">
-                        <FileText className="h-4 w-4 text-blue-600" />
-                        <span className="font-medium text-sm">{resource.title}</span>
-                      </div>
-                      <div className="flex justify-between text-xs text-gray-600">
-                        <span>{resource.type}</span>
-                        <span>{resource.downloads} downloads</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Agenda */}
-          <TabsContent value="agenda" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Calendário Acadêmico</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={setSelectedDate}
-                    locale={ptBR}
-                    className="rounded-md border"
-                  />
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Próximos Eventos</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {events.map((event, index) => (
-                    <div key={index} className="flex items-center gap-4 p-3 bg-blue-50 rounded-lg">
-                      <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
-                        {format(new Date(event.date), "dd")}
-                      </div>
-                      <div>
-                        <p className="font-medium">{event.title}</p>
-                        <p className="text-sm text-gray-600">
-                          {format(new Date(event.date), "EEEE, dd 'de' MMMM", { locale: ptBR })}
-                        </p>
-                        <Badge variant="outline" className="mt-1">
-                          {event.type}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </div>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Adicionar Evento Pessoal</CardTitle>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Award className="h-5 w-5" />
+                  Meu Progresso TCC
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between text-base">
+                    <span>Progresso Geral</span>
+                    <span className="font-bold">65%</span>
+                  </div>
+                  <Progress value={65} className="h-3" />
+                </div>
+
+                <div className="space-y-4">
+                  {[
+                    { phase: "Escolha do Tema", completed: true },
+                    { phase: "Revisão Bibliográfica", completed: true },
+                    { phase: "Metodologia", completed: true },
+                    { phase: "Desenvolvimento", completed: false },
+                    { phase: "Testes", completed: false },
+                    { phase: "Documentação Final", completed: false },
+                  ].map((phase, index) => (
+                    <div key={index} className="flex items-center gap-4">
+                      <div
+                        className={`w-5 h-5 rounded-full flex-shrink-0 ${phase.completed ? "bg-green-500" : "bg-gray-300"}`}
+                      ></div>
+                      <span className={`text-base ${phase.completed ? "text-green-700" : "text-gray-600"}`}>
+                        {phase.phase}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <Button className="w-full h-12 text-base">
+                  <FileText className="mr-2 h-5 w-5" />
+                  Continuar TCC
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <ThumbsUp className="h-5 w-5" />
+                  Votação de Ideias
+                </CardTitle>
+                <CardDescription>Vote nas melhores ideias para TCC da turma</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {tccIdeas.map((idea) => (
+                  <div key={idea.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex-1">
+                      <p className="font-medium text-base">{idea.title}</p>
+                      <Badge variant="outline" className="mt-1">
+                        {idea.category}
+                      </Badge>
+                    </div>
+                    <Button variant="outline" size="sm" className="h-10 ml-3 bg-transparent">
+                      <ThumbsUp className="h-4 w-4 mr-1" />
+                      {idea.votes}
+                    </Button>
+                  </div>
+                ))}
+
+                <Button variant="outline" className="w-full h-12 bg-transparent text-base">
+                  <Plus className="mr-2 h-5 w-5" />
+                  Propor Nova Ideia
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Agenda - Mobile Optimized */}
+          <TabsContent value="agenda" className="space-y-4 mt-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Calendário Acadêmico</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  locale={ptBR}
+                  className="rounded-md border w-full"
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Próximos Eventos</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {events.map((event, index) => (
+                  <div key={index} className="flex items-center gap-4 p-4 bg-blue-50 rounded-lg">
+                    <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold flex-shrink-0">
+                      {format(new Date(event.date), "dd")}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-base">{event.title}</p>
+                      <p className="text-sm text-gray-600">
+                        {format(new Date(event.date), "EEEE, dd 'de' MMMM", { locale: ptBR })}
+                      </p>
+                      <Badge variant="outline" className="mt-1">
+                        {event.type}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Adicionar Evento Pessoal</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="event-title">Título do Evento</Label>
-                    <Input id="event-title" placeholder="Ex: Reunião de grupo" />
+                    <Label htmlFor="event-title" className="text-base">
+                      Título do Evento
+                    </Label>
+                    <Input id="event-title" placeholder="Ex: Reunião de grupo" className="h-12 text-base" />
                   </div>
                   <div className="space-y-2">
-                    <Label>Data</Label>
+                    <Label className="text-base">Data</Label>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" className="w-full justify-start text-left font-normal bg-transparent">
-                          <CalendarIcon className="mr-2 h-4 w-4" />
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left font-normal bg-transparent h-12 text-base"
+                        >
+                          <CalendarIcon className="mr-2 h-5 w-5" />
                           {selectedDate ? format(selectedDate, "dd/MM/yyyy", { locale: ptBR }) : "Selecionar data"}
                         </Button>
                       </PopoverTrigger>
@@ -1008,31 +1017,37 @@ export default function EtecbookApp() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="event-description">Descrição</Label>
-                  <Textarea id="event-description" placeholder="Detalhes do evento..." />
+                  <Label htmlFor="event-description" className="text-base">
+                    Descrição
+                  </Label>
+                  <Textarea id="event-description" placeholder="Detalhes do evento..." className="text-base" />
                 </div>
-                <Button className="w-full">
-                  <CalendarIcon className="mr-2 h-4 w-4" />
+                <Button className="w-full h-12 text-base">
+                  <CalendarIcon className="mr-2 h-5 w-5" />
                   Adicionar à Agenda
                 </Button>
               </CardContent>
             </Card>
           </TabsContent>
 
-          {/* Comunidade */}
-          <TabsContent value="comunidade" className="space-y-6">
+          {/* Comunidade - Mobile Optimized */}
+          <TabsContent value="comunidade" className="space-y-4 mt-4">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <Users className="h-5 w-5" />
                   Fórum da Turma
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Textarea placeholder="Compartilhe uma dúvida, dica ou conquista com a turma..." rows={3} />
-                  <Button>
-                    <MessageSquare className="mr-2 h-4 w-4" />
+                <div className="space-y-3">
+                  <Textarea
+                    placeholder="Compartilhe uma dúvida, dica ou conquista com a turma..."
+                    rows={4}
+                    className="text-base"
+                  />
+                  <Button className="w-full h-12 text-base">
+                    <MessageSquare className="mr-2 h-5 w-5" />
                     Publicar
                   </Button>
                 </div>
@@ -1058,7 +1073,7 @@ export default function EtecbookApp() {
                   ].map((post, index) => (
                     <div key={index} className="p-4 border rounded-lg">
                       <div className="flex items-center gap-3 mb-3">
-                        <Avatar className="w-8 h-8">
+                        <Avatar className="w-10 h-10">
                           <AvatarFallback>
                             {post.author
                               .split(" ")
@@ -1067,18 +1082,18 @@ export default function EtecbookApp() {
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <p className="font-medium text-sm">{post.author}</p>
-                          <p className="text-xs text-gray-600">{post.time}</p>
+                          <p className="font-medium text-base">{post.author}</p>
+                          <p className="text-sm text-gray-600">{post.time}</p>
                         </div>
                       </div>
-                      <p className="text-sm mb-3">{post.content}</p>
-                      <div className="flex items-center gap-4 text-sm text-gray-600">
-                        <button className="flex items-center gap-1 hover:text-blue-600">
-                          <ThumbsUp className="h-4 w-4" />
+                      <p className="text-base mb-4 leading-relaxed">{post.content}</p>
+                      <div className="flex items-center gap-6 text-base text-gray-600">
+                        <button className="flex items-center gap-2 hover:text-blue-600 active:scale-95 transition-transform">
+                          <ThumbsUp className="h-5 w-5" />
                           {post.likes}
                         </button>
-                        <button className="flex items-center gap-1 hover:text-blue-600">
-                          <MessageSquare className="h-4 w-4" />
+                        <button className="flex items-center gap-2 hover:text-blue-600 active:scale-95 transition-transform">
+                          <MessageSquare className="h-5 w-5" />
                           {post.comments}
                         </button>
                       </div>
@@ -1090,24 +1105,24 @@ export default function EtecbookApp() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Links Úteis</CardTitle>
+                <CardTitle className="text-lg">Links Úteis</CardTitle>
                 <CardDescription>Acesso rápido a ferramentas e comunicação</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 bg-transparent">
+                <div className="grid grid-cols-1 gap-4">
+                  <Button variant="outline" className="h-16 p-4 flex items-center gap-4 bg-transparent text-base">
                     <MessageSquare className="h-6 w-6 text-green-600" />
                     <span>WhatsApp Professores</span>
                   </Button>
-                  <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 bg-transparent">
+                  <Button variant="outline" className="h-16 p-4 flex items-center gap-4 bg-transparent text-base">
                     <Users className="h-6 w-6 text-blue-600" />
                     <span>Discord da Turma</span>
                   </Button>
-                  <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 bg-transparent">
+                  <Button variant="outline" className="h-16 p-4 flex items-center gap-4 bg-transparent text-base">
                     <BookOpen className="h-6 w-6 text-purple-600" />
                     <span>Portal ETEC</span>
                   </Button>
-                  <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 bg-transparent">
+                  <Button variant="outline" className="h-16 p-4 flex items-center gap-4 bg-transparent text-base">
                     <FileText className="h-6 w-6 text-orange-600" />
                     <span>Biblioteca Digital</span>
                   </Button>
@@ -1116,14 +1131,14 @@ export default function EtecbookApp() {
             </Card>
           </TabsContent>
 
-          {/* Parceiros */}
-          <TabsContent value="parceiros" className="space-y-6">
+          {/* Parceiros - Mobile Optimized */}
+          <TabsContent value="parceiros" className="space-y-4 mt-4">
             {userType === "partner" ? (
-              // Partner Dashboard
-              <div className="space-y-6">
+              // Partner Dashboard - Mobile
+              <div className="space-y-4">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
+                    <CardTitle className="flex items-center gap-2 text-lg">
                       <Building className="h-5 w-5" />
                       Dashboard do Parceiro
                     </CardTitle>
@@ -1131,149 +1146,73 @@ export default function EtecbookApp() {
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <h3 className="text-lg font-semibold">Publicar Nova Vaga de Estágio</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="vacancy-role">Cargo</Label>
-                        <Input id="vacancy-role" placeholder="Ex: Estagiário Desenvolvedor Back-end" />
+                        <Label htmlFor="vacancy-role" className="text-base">
+                          Cargo
+                        </Label>
+                        <Input
+                          id="vacancy-role"
+                          placeholder="Ex: Estagiário Desenvolvedor Back-end"
+                          className="h-12 text-base"
+                        />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="vacancy-location">Localização</Label>
-                        <Input id="vacancy-location" placeholder="Ex: São Paulo - SP ou Remoto" />
+                        <Label htmlFor="vacancy-location" className="text-base">
+                          Localização
+                        </Label>
+                        <Input
+                          id="vacancy-location"
+                          placeholder="Ex: São Paulo - SP ou Remoto"
+                          className="h-12 text-base"
+                        />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="vacancy-description">Descrição da Vaga</Label>
+                      <Label htmlFor="vacancy-description" className="text-base">
+                        Descrição da Vaga
+                      </Label>
                       <Textarea
                         id="vacancy-description"
                         placeholder="Detalhes da vaga, responsabilidades..."
-                        rows={3}
+                        rows={4}
+                        className="text-base"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="vacancy-requirements">Requisitos</Label>
+                      <Label htmlFor="vacancy-requirements" className="text-base">
+                        Requisitos
+                      </Label>
                       <Textarea
                         id="vacancy-requirements"
                         placeholder="Habilidades e conhecimentos necessários..."
-                        rows={2}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="vacancy-link">Link para Inscrição</Label>
-                      <Input id="vacancy-link" placeholder="URL para o formulário de inscrição" />
-                    </div>
-                    <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                      <Briefcase className="mr-2 h-4 w-4" />
-                      Publicar Vaga
-                    </Button>
-
-                    <h3 className="text-lg font-semibold mt-8">Convidar para Palestra/Workshop</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="lecture-title">Título da Palestra</Label>
-                        <Input id="lecture-title" placeholder="Ex: Introdução ao Machine Learning" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="lecture-speaker">Palestrante</Label>
-                        <Input id="lecture-speaker" placeholder="Nome do palestrante" />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Data</Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              className="w-full justify-start text-left font-normal bg-transparent"
-                            >
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {selectedDate ? format(selectedDate, "dd/MM/yyyy", { locale: ptBR }) : "Selecionar data"}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar
-                              mode="single"
-                              selected={selectedDate}
-                              onSelect={setSelectedDate}
-                              locale={ptBR}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="lecture-time">Horário</Label>
-                        <Input id="lecture-time" placeholder="Ex: 19:00" />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="lecture-description">Descrição</Label>
-                      <Textarea
-                        id="lecture-description"
-                        placeholder="Detalhes da palestra, tópicos abordados..."
                         rows={3}
+                        className="text-base"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="lecture-link">Link de Acesso/Inscrição</Label>
-                      <Input id="lecture-link" placeholder="URL para a transmissão ou inscrição" />
+                      <Label htmlFor="vacancy-link" className="text-base">
+                        Link para Inscrição
+                      </Label>
+                      <Input
+                        id="vacancy-link"
+                        placeholder="URL para o formulário de inscrição"
+                        className="h-12 text-base"
+                      />
                     </div>
-                    <Button className="w-full bg-purple-600 hover:bg-purple-700">
-                      <Megaphone className="mr-2 h-4 w-4" />
-                      Convidar para Palestra
-                    </Button>
-
-                    <h3 className="text-lg font-semibold mt-8">Agendar Visita Empresarial</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Data da Visita</Label>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              className="w-full justify-start text-left font-normal bg-transparent"
-                            >
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {selectedDate ? format(selectedDate, "dd/MM/yyyy", { locale: ptBR }) : "Selecionar data"}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar
-                              mode="single"
-                              selected={selectedDate}
-                              onSelect={setSelectedDate}
-                              locale={ptBR}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="visit-time">Horário</Label>
-                        <Input id="visit-time" placeholder="Ex: 10:00" />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="visit-description">Descrição da Visita</Label>
-                      <Textarea id="visit-description" placeholder="O que os alunos verão na visita..." rows={3} />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="visit-slots">Vagas Disponíveis</Label>
-                      <Input id="visit-slots" type="number" placeholder="Número de vagas" />
-                    </div>
-                    <Button className="w-full bg-orange-600 hover:bg-orange-700">
-                      <CalendarCheck className="mr-2 h-4 w-4" />
-                      Agendar Visita
+                    <Button className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-base">
+                      <Briefcase className="mr-2 h-5 w-5" />
+                      Publicar Vaga
                     </Button>
                   </CardContent>
                 </Card>
               </div>
             ) : (
-              // Student View of Partner Opportunities
-              <div className="space-y-6">
+              // Student View - Mobile
+              <div className="space-y-4">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
+                    <CardTitle className="flex items-center gap-2 text-lg">
                       <Briefcase className="h-5 w-5" />
                       Vagas de Estágio
                     </CardTitle>
@@ -1281,19 +1220,19 @@ export default function EtecbookApp() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {internshipVacancies.map((vacancy) => (
-                      <div key={vacancy.id} className="p-4 border rounded-lg space-y-2">
+                      <div key={vacancy.id} className="p-4 border rounded-lg space-y-3">
                         <h3 className="font-bold text-lg">{vacancy.role}</h3>
-                        <p className="text-sm text-gray-700">
-                          <Building className="inline-block h-4 w-4 mr-1 text-gray-500" />
+                        <p className="text-base text-gray-700 flex items-center gap-2">
+                          <Building className="h-4 w-4 text-gray-500" />
                           {vacancy.company}
                         </p>
-                        <p className="text-sm text-gray-600">
-                          <MapPin className="inline-block h-4 w-4 mr-1 text-gray-500" />
+                        <p className="text-base text-gray-600 flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-gray-500" />
                           {vacancy.location}
                         </p>
-                        <p className="text-sm">{vacancy.description}</p>
-                        <p className="text-xs text-gray-500">**Requisitos:** {vacancy.requirements}</p>
-                        <Button variant="link" className="p-0 h-auto">
+                        <p className="text-base leading-relaxed">{vacancy.description}</p>
+                        <p className="text-sm text-gray-500">**Requisitos:** {vacancy.requirements}</p>
+                        <Button variant="link" className="p-0 h-auto text-base">
                           <Link className="h-4 w-4 mr-1" />
                           <a href={vacancy.link} target="_blank" rel="noopener noreferrer">
                             Ver Detalhes e Candidatar
@@ -1306,7 +1245,7 @@ export default function EtecbookApp() {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
+                    <CardTitle className="flex items-center gap-2 text-lg">
                       <Megaphone className="h-5 w-5" />
                       Palestras e Workshops
                     </CardTitle>
@@ -1314,21 +1253,21 @@ export default function EtecbookApp() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {lectureInvitations.map((lecture) => (
-                      <div key={lecture.id} className="p-4 border rounded-lg space-y-2">
+                      <div key={lecture.id} className="p-4 border rounded-lg space-y-3">
                         <h3 className="font-bold text-lg">{lecture.title}</h3>
-                        <p className="text-sm text-gray-700">
-                          <Building className="inline-block h-4 w-4 mr-1 text-gray-500" />
+                        <p className="text-base text-gray-700 flex items-center gap-2">
+                          <Building className="h-4 w-4 text-gray-500" />
                           {lecture.company}
                         </p>
-                        <p className="text-sm text-gray-600">
-                          <CalendarIcon className="inline-block h-4 w-4 mr-1 text-gray-500" />
+                        <p className="text-base text-gray-600 flex items-center gap-2">
+                          <CalendarIcon className="h-4 w-4 text-gray-500" />
                           {format(new Date(lecture.date), "dd/MM/yyyy", { locale: ptBR })} às {lecture.time}
                         </p>
-                        <p className="text-sm text-gray-600">
-                          <Users className="inline-block h-4 w-4 mr-1 text-gray-500" />
+                        <p className="text-base text-gray-600 flex items-center gap-2">
+                          <Users className="h-4 w-4 text-gray-500" />
                           Palestrante: {lecture.speaker}
                         </p>
-                        <Button variant="link" className="p-0 h-auto">
+                        <Button variant="link" className="p-0 h-auto text-base">
                           <Link className="h-4 w-4 mr-1" />
                           <a href={lecture.link} target="_blank" rel="noopener noreferrer">
                             Inscrever-se / Acessar
@@ -1338,68 +1277,49 @@ export default function EtecbookApp() {
                     ))}
                   </CardContent>
                 </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <CalendarCheck className="h-5 w-5" />
-                      Visitas Empresariais
-                    </CardTitle>
-                    <CardDescription>Conheça o dia a dia de grandes empresas de tecnologia</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {companyVisits.map((visit) => (
-                      <div key={visit.id} className="p-4 border rounded-lg space-y-2">
-                        <h3 className="font-bold text-lg">{visit.company}</h3>
-                        <p className="text-sm text-gray-700">
-                          <CalendarIcon className="inline-block h-4 w-4 mr-1 text-gray-500" />
-                          {format(new Date(visit.date), "dd/MM/yyyy", { locale: ptBR })} às {visit.time}
-                        </p>
-                        <p className="text-sm">{visit.description}</p>
-                        <div className="flex items-center justify-between text-sm text-gray-600">
-                          <span>
-                            Vagas: {visit.registered}/{visit.slots}
-                          </span>
-                          <Button size="sm" disabled={visit.registered >= visit.slots}>
-                            {visit.registered >= visit.slots ? "Lotado" : "Inscrever-se"}
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </CardContent>
-                </Card>
               </div>
             )}
           </TabsContent>
 
-          {/* Vídeos */}
-          <TabsContent value="videos" className="space-y-6">
+          {/* Vídeos - Mobile Optimized */}
+          <TabsContent value="videos" className="space-y-4 mt-4">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <Video className="h-5 w-5" />
                   Publicar Novo Vídeo
                 </CardTitle>
-                <CardDescription>Compartilhe tutoriais, dicas ou projetos em vídeo com a comunidade</CardDescription>
+                <CardDescription>Compartilhe tutoriais, dicas ou projetos em vídeo</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="video-title">Título do Vídeo</Label>
-                  <Input id="video-title" placeholder="Ex: Tutorial de Git e GitHub para Iniciantes" />
+                  <Label htmlFor="video-title" className="text-base">
+                    Título do Vídeo
+                  </Label>
+                  <Input
+                    id="video-title"
+                    placeholder="Ex: Tutorial de Git e GitHub para Iniciantes"
+                    className="h-12 text-base"
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="video-description">Descrição</Label>
-                  <Textarea id="video-description" placeholder="Descreva o conteúdo do seu vídeo..." rows={3} />
+                  <Label htmlFor="video-description" className="text-base">
+                    Descrição
+                  </Label>
+                  <Textarea
+                    id="video-description"
+                    placeholder="Descreva o conteúdo do seu vídeo..."
+                    rows={4}
+                    className="text-base"
+                  />
                 </div>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
                   <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                  <p className="mt-2 text-sm text-gray-600">
-                    Arraste e solte seu arquivo de vídeo aqui ou clique para selecionar
-                  </p>
-                  <p className="text-xs text-gray-500">Suporta: .mp4, .mov, .avi (máx. 200MB)</p>
+                  <p className="mt-2 text-base text-gray-600">Toque para selecionar vídeo</p>
+                  <p className="text-sm text-gray-500">Suporta: .mp4, .mov, .avi (máx. 200MB)</p>
                 </div>
-                <Button className="w-full bg-red-600 hover:bg-red-700">
-                  <Video className="mr-2 h-4 w-4" />
+                <Button className="w-full h-12 bg-red-600 hover:bg-red-700 text-base">
+                  <Video className="mr-2 h-5 w-5" />
                   Publicar Vídeo
                 </Button>
               </CardContent>
@@ -1407,40 +1327,41 @@ export default function EtecbookApp() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <PlayCircle className="h-5 w-5" />
                   Galeria de Vídeos ADS
                 </CardTitle>
-                <CardDescription>
-                  Assista e aprenda com vídeos da comunidade sobre Análise e Desenvolvimento de Sistemas
-                </CardDescription>
+                <CardDescription>Assista e aprenda com vídeos da comunidade</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="space-y-6">
                   {videos.map((video) => (
-                    <div
-                      key={video.id}
-                      className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-                    >
+                    <div key={video.id} className="border rounded-lg overflow-hidden shadow-sm">
                       <div className="relative">
                         <img
                           src={video.thumbnail || "/placeholder.svg"}
                           alt={video.title}
-                          className="w-full h-40 object-cover cursor-pointer"
+                          className="w-full h-48 object-cover cursor-pointer"
                         />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40">
-                          <PlayCircle className="h-12 w-12 text-white opacity-80 hover:opacity-100 cursor-pointer" />
-                        </div>
-                        <Badge className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                        <a
+                          href={video.videoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40"
+                          aria-label={`Assistir vídeo: ${video.title}`}
+                        >
+                          <PlayCircle className="h-16 w-16 text-white opacity-80 hover:opacity-100 cursor-pointer" />
+                        </a>
+                        <Badge className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white text-sm px-2 py-1 rounded">
                           {video.duration}
                         </Badge>
                       </div>
-                      <div className="p-3">
-                        <h3 className="font-semibold text-base mb-1 line-clamp-2">{video.title}</h3>
-                        <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                          <Avatar className="w-6 h-6">
+                      <div className="p-4">
+                        <h3 className="font-semibold text-lg mb-2 line-clamp-2">{video.title}</h3>
+                        <div className="flex items-center gap-3 text-base text-gray-600 mb-3">
+                          <Avatar className="w-8 h-8">
                             <AvatarImage src={video.avatar || "/placeholder.svg"} alt={video.author} />
-                            <AvatarFallback className="text-xs">
+                            <AvatarFallback className="text-sm">
                               {video.author
                                 .split(" ")
                                 .map((n) => n[0])
@@ -1449,20 +1370,25 @@ export default function EtecbookApp() {
                           </Avatar>
                           <span>{video.author}</span>
                         </div>
-                        <div className="flex items-center justify-between text-xs text-gray-500">
-                          <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                          <div className="flex items-center gap-4">
                             <span>{video.views} visualizações</span>
-                            <span className="mx-1">•</span>
                             <div className="flex items-center gap-1">
-                              <ThumbsUp className="h-3 w-3" />
+                              <ThumbsUp className="h-4 w-4" />
                               <span>{video.likes}</span>
                             </div>
                             <div className="flex items-center gap-1">
-                              <MessageSquare className="h-3 w-3" />
+                              <MessageSquare className="h-4 w-4" />
                               <span>{video.comments}</span>
                             </div>
                           </div>
                         </div>
+                        <Button asChild variant="outline" size="sm" className="w-full h-12 bg-transparent text-base">
+                          <a href={video.videoUrl} target="_blank" rel="noopener noreferrer">
+                            <PlayCircle className="mr-2 h-5 w-5" />
+                            Assistir Vídeo
+                          </a>
+                        </Button>
                       </div>
                     </div>
                   ))}
@@ -1471,12 +1397,10 @@ export default function EtecbookApp() {
             </Card>
           </TabsContent>
 
-          {/* Perfil */}
-          <TabsContent value="perfil" className="space-y-6">
-            <Card className="shadow-2xl">
-              {" "}
-              {/* Adicionado shadow-2xl aqui */}
-              <CardHeader className="relative p-0 h-48 rounded-t-lg overflow-hidden">
+          {/* Perfil - Mobile Optimized */}
+          <TabsContent value="perfil" className="space-y-4 mt-4">
+            <Card className="shadow-lg">
+              <CardHeader className="relative p-0 h-32 rounded-t-lg overflow-hidden">
                 <img
                   src={userProfile.coverImage || "/placeholder.svg"}
                   alt="Capa do Perfil"
@@ -1492,21 +1416,19 @@ export default function EtecbookApp() {
                 <Button
                   variant="secondary"
                   size="sm"
-                  className="absolute bottom-2 right-2 z-10"
+                  className="absolute bottom-2 right-2 z-10 h-8 text-xs"
                   onClick={() => document.getElementById("cover-image-upload")?.click()}
                 >
                   Alterar Capa
                 </Button>
-                <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 z-20">
-                  <Avatar className="w-32 h-32 border-4 border-white shadow-lg">
+                <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 z-20">
+                  <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
                     <AvatarImage src={userProfile.avatar || "/placeholder.svg"} alt={userProfile.name} />
-                    <AvatarFallback className="text-4xl">JS</AvatarFallback>
+                    <AvatarFallback className="text-2xl">JS</AvatarFallback>
                   </Avatar>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-6 p-6 pt-20">
-                {" "}
-                {/* Adjusted padding-top */}
+              <CardContent className="space-y-4 p-4 pt-16">
                 <input
                   type="file"
                   id="profile-image-upload"
@@ -1514,41 +1436,59 @@ export default function EtecbookApp() {
                   accept="image/*"
                   onChange={handleProfileImageChange}
                 />
-                <div className="flex justify-center mt-4">
-                  <Button variant="outline" onClick={() => document.getElementById("profile-image-upload")?.click()}>
+                <div className="flex justify-center">
+                  <Button
+                    variant="outline"
+                    onClick={() => document.getElementById("profile-image-upload")?.click()}
+                    className="h-10"
+                  >
                     Alterar Foto de Perfil
                   </Button>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Nome Completo</Label>
-                    <Input id="name" value={userProfile.name} onChange={handleChange} />
+                    <Label htmlFor="name" className="text-base">
+                      Nome Completo
+                    </Label>
+                    <Input id="name" value={userProfile.name} onChange={handleChange} className="h-12 text-base" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="age" className="text-base">
+                        Idade
+                      </Label>
+                      <Input id="age" value={userProfile.age} onChange={handleChange} className="h-12 text-base" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="city" className="text-base">
+                        Cidade
+                      </Label>
+                      <Input id="city" value={userProfile.city} onChange={handleChange} className="h-12 text-base" />
+                    </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="age">Idade</Label>
-                    <Input id="age" value={userProfile.age} onChange={handleChange} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="city">Cidade</Label>
-                    <Input id="city" value={userProfile.city} onChange={handleChange} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="semester">Semestre</Label>
-                    <Input id="semester" value={userProfile.semester} disabled />
+                    <Label htmlFor="semester" className="text-base">
+                      Semestre
+                    </Label>
+                    <Input id="semester" value={userProfile.semester} disabled className="h-12 text-base" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="bio">Biografia</Label>
+                  <Label htmlFor="bio" className="text-base">
+                    Biografia
+                  </Label>
                   <Textarea
                     id="bio"
                     placeholder="Conte um pouco sobre você, seus interesses e objetivos..."
-                    rows={4}
+                    rows={5}
                     value={userProfile.bio || ""}
                     onChange={handleChange}
+                    className="text-base"
                   />
                 </div>
-                <Button className="w-full">
-                  <Settings className="mr-2 h-4 w-4" />
+                <Button className="w-full h-12 text-base">
+                  <Settings className="mr-2 h-5 w-5" />
                   Salvar Alterações
                 </Button>
               </CardContent>
@@ -1556,10 +1496,10 @@ export default function EtecbookApp() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Estatísticas</CardTitle>
+                <CardTitle className="text-lg">Estatísticas</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="text-center p-4 bg-blue-50 rounded-lg">
                     <div className="text-2xl font-bold text-blue-600">15</div>
                     <div className="text-sm text-gray-600">Trabalhos Enviados</div>
@@ -1580,39 +1520,41 @@ export default function EtecbookApp() {
               </CardContent>
             </Card>
           </TabsContent>
-          <TabsContent value="admin" className="space-y-6">
+
+          {/* Admin - Mobile Optimized */}
+          <TabsContent value="admin" className="space-y-4 mt-4">
             {userType === "staff" ? (
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-lg">
                     <Settings className="h-5 w-5" />
                     Painel de Administração
                   </CardTitle>
                   <CardDescription>Gerencie usuários, conteúdos e configurações da plataforma.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 bg-transparent">
+                  <div className="grid grid-cols-1 gap-4">
+                    <Button variant="outline" className="h-16 p-4 flex items-center gap-4 bg-transparent text-base">
                       <Users className="h-6 w-6 text-blue-600" />
                       <span>Gerenciar Alunos</span>
                     </Button>
-                    <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 bg-transparent">
+                    <Button variant="outline" className="h-16 p-4 flex items-center gap-4 bg-transparent text-base">
                       <Briefcase className="h-6 w-6 text-green-600" />
                       <span>Gerenciar Parceiros</span>
                     </Button>
-                    <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 bg-transparent">
+                    <Button variant="outline" className="h-16 p-4 flex items-center gap-4 bg-transparent text-base">
                       <FileText className="h-6 w-6 text-purple-600" />
                       <span>Moderar Trabalhos</span>
                     </Button>
-                    <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 bg-transparent">
+                    <Button variant="outline" className="h-16 p-4 flex items-center gap-4 bg-transparent text-base">
                       <Video className="h-6 w-6 text-red-600" />
                       <span>Gerenciar Vídeos</span>
                     </Button>
-                    <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 bg-transparent">
+                    <Button variant="outline" className="h-16 p-4 flex items-center gap-4 bg-transparent text-base">
                       <CalendarIcon className="h-6 w-6 text-orange-600" />
                       <span>Gerenciar Eventos</span>
                     </Button>
-                    <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2 bg-transparent">
+                    <Button variant="outline" className="h-16 p-4 flex items-center gap-4 bg-transparent text-base">
                       <Bell className="h-6 w-6 text-yellow-600" />
                       <span>Enviar Notificações</span>
                     </Button>
@@ -1622,15 +1564,39 @@ export default function EtecbookApp() {
             ) : (
               <Card>
                 <CardHeader>
-                  <CardTitle>Acesso Restrito</CardTitle>
+                  <CardTitle className="text-lg">Acesso Restrito</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>Você não tem permissão para acessar esta área. Por favor, faça login como membro da equipe.</p>
+                  <p className="text-base">
+                    Você não tem permissão para acessar esta área. Por favor, faça login como membro da equipe.
+                  </p>
                 </CardContent>
               </Card>
             )}
           </TabsContent>
         </Tabs>
+      </div>
+
+      {/* Mobile Bottom Navigation - Fixed */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg md:hidden z-40">
+        <div className="grid grid-cols-5 gap-1 p-2">
+          {menuItems.slice(0, 5).map((item) => {
+            const Icon = item.icon
+            return (
+              <Button
+                key={item.id}
+                variant="ghost"
+                className={`flex flex-col items-center gap-1 h-16 p-2 ${
+                  activeTab === item.id ? "text-blue-600 bg-blue-50" : "text-gray-600"
+                }`}
+                onClick={() => setActiveTab(item.id)}
+              >
+                <Icon className="h-5 w-5" />
+                <span className="text-xs font-medium">{item.label}</span>
+              </Button>
+            )
+          })}
+        </div>
       </div>
     </div>
   )
